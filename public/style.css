@@ -81,7 +81,7 @@ ul li { margin: 0.15rem 0; }
 .button-link:hover { filter: brightness(1.05); }
 
 /* Recipe index — list of links */
-.recipe-links { list-style: none; padding: 0; margin: 1.75rem 0 0; }
+.recipe-links { list-style: none; padding: 0; margin: 0.6rem 0 0; }
 .recipe-links li { margin: 0.6rem 0; }
 .recipe-links a {
   display: block;
