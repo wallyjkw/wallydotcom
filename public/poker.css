@@ -1,6 +1,8 @@
 /* Poker page styles — layered on top of the shared style.css */
 
-.poker-card { max-width: 720px; }
+/* The poker page goes much wider than the rest of the site, with less padding,
+   so the table can dominate the screen. */
+.poker-card { max-width: 1100px; padding: 1.5rem 1.5rem 2rem; }
 
 /* ------------------------------- Setup ------------------------------- */
 #setup { margin-top: 1.5rem; }
@@ -58,8 +60,9 @@
 #table {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  margin: 0.5rem 0 1.25rem;
+  aspect-ratio: 16 / 10;
+  max-height: 72vh;
+  margin: 0.5rem auto 1.25rem;
   background: radial-gradient(ellipse at center, #2e7d4f 0%, #1f5d3a 70%, #194b2f 100%);
   border: 6px solid #6b4a2b;
   border-radius: 48% / 46%;
@@ -148,8 +151,11 @@
 
 .after-hand { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
 
-/* Narrow phones: shrink seats a touch so they don't overlap */
+/* Narrow phones: taller table fills the screen better, smaller seats so they
+   don't overlap around the oval. */
 @media (max-width: 480px) {
+  .poker-card { padding: 1rem 0.75rem 1.5rem; }
+  #table { aspect-ratio: 4 / 5; max-height: 80vh; }
   .seat { width: 74px; padding: 4px 2px 5px; }
   .seat-name { font-size: 0.7rem; }
   .pcard { min-width: 20px; height: 30px; font-size: 0.7rem; }
