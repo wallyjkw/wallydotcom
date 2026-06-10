@@ -462,7 +462,7 @@ if (typeof document !== "undefined") {
     function scheduleBot(idx) {
       pendingBotIdx = idx;
       clearTimeout(pendingTimer);
-      pendingTimer = setTimeout(function () { doBotStep(idx); }, G.fastForward ? 0 : 750);
+      pendingTimer = setTimeout(function () { doBotStep(idx); }, G.fastForward ? 0 : 1000);
     }
     function doBotStep(idx) {
       pendingBotIdx = -1;
