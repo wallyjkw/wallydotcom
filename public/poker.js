@@ -422,7 +422,7 @@ if (typeof document !== "undefined") {
         }
         var label = pots.length > 1 ? (pi === 0 ? "Main pot" : "Side pot " + pi) : "Pot";
         lines.push(label + ": " + winners.map(function (w) { return w.name; }).join(", ") +
-          " win" + (winners.length > 1 ? " (split)" : "") + " " + money(pot.amount) +
+          (winners.length > 1 ? " win (split)" : " wins") + " " + money(pot.amount) +
           " with " + handName(best) + ".");
       });
 
