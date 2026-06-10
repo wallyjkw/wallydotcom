@@ -88,14 +88,15 @@
 }
 #dealer-btn {
   position: absolute;
-  width: 22px; height: 22px;
-  margin: 26px 0 0 26px;          /* nudge off the seat toward the center */
+  z-index: 5;                      /* sit above the seats so it's always visible */
+  width: 26px; height: 26px;
   transform: translate(-50%, -50%);
   background: #fff; color: #194b2f;
+  border: 2px solid #194b2f;
   border-radius: 50%;
-  font-size: 0.7rem; font-weight: 700;
+  font-size: 0.8rem; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
 }
 
 /* ------------------------------- Seats ------------------------------- */

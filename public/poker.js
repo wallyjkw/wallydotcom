@@ -493,10 +493,17 @@ if (typeof document !== "undefined") {
           (p.bet > 0 ? '<div class="seat-bet">' + money(p.bet) + "</div>" : "");
       });
 
-      // Position the dealer button near the button seat.
-      var bSeat = document.getElementById("seat-" + G.button);
+      // Position the dealer button between the button player's seat and the
+      // center of the table, so it sits on the felt and is clearly visible.
       var dbtn = document.getElementById("dealer-btn");
-      if (bSeat && dbtn) { dbtn.style.left = bSeat.style.left; dbtn.style.top = bSeat.style.top; }
+      if (dbtn) {
+        var n = G.players.length;
+        var angle = (90 + G.button * 360 / n) * Math.PI / 180;
+        var seatLeft = 50 + 40 * Math.cos(angle);
+        var seatTop = 50 + 42 * Math.sin(angle);
+        dbtn.style.left = (seatLeft + (50 - seatLeft) * 0.22) + "%";
+        dbtn.style.top = (seatTop + (50 - seatTop) * 0.22) + "%";
+      }
     }
 
     /* --------------------------- human controls --------------------------- */
