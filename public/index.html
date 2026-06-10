@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Wally Dot Com</title>
+</head>
+<body>
+    <h1>Wally Dot Com</h1>
+    <p>Yes, this is Wally Dot Com.</p>
+    <p>Deployed from GitHub via Cloudflare. 🚀</p>
+    <p>You are visitor #<span id="count">…</span></p>
+
+    <script>
+      // Ask our Worker for the current visitor count and show it.
+      fetch('/api/count')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          document.getElementById('count').textContent = data.count.toLocaleString();
+        })
+        .catch(function () {
+          document.getElementById('count').textContent = '?';
+        });
+    </script>
+</body>
+</html>

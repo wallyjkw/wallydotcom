@@ -1,0 +1,19 @@
+{
+  // The Cloudflare project this deploys to. Must match the existing Worker name.
+  "name": "wallydotcomgithub",
+  // The Worker code that runs on Cloudflare's servers.
+  "main": "src/worker.js",
+  "compatibility_date": "2026-06-10",
+  // Static files (index.html, etc.) served from this folder.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  // The persistent "sticky note" that remembers the visitor count.
+  "kv_namespaces": [
+    {
+      "binding": "COUNTER",
+      "id": "86173dfe367244b0ada7a85676b818a6"
+    }
+  ]
+}

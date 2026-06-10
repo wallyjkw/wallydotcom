@@ -1,0 +1,8 @@
+# Wrangler local cache
+.wrangler/
+
+# Node dependencies (if added later)
+node_modules/
+
+# Local-only Claude Code settings
+.claude/settings.local.json
