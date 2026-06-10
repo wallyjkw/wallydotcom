@@ -663,7 +663,6 @@ if (typeof document !== "undefined") {
       el.setup.hidden = false;
     }
     document.getElementById("new-game").addEventListener("click", leaveTable);
-    document.getElementById("leave-2").addEventListener("click", leaveTable);
 
     // Fast-forward the rest of the hand once you're out of it.
     el.skip.addEventListener("click", function () {
