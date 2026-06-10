@@ -141,7 +141,25 @@
 #board .pcard { min-width: 30px; height: 42px; font-size: 0.9rem; }
 
 /* ------------------------------- Controls ------------------------------- */
-.controls { margin-top: 0.5rem; }
+/* The whole bar sticks to the bottom of the viewport, so the action buttons
+   stay put and visible every turn instead of collapsing out of view. */
+#action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  margin: 0 -1.5rem -2rem;          /* bleed to the card edges */
+  padding: 0.75rem 1.5rem 1rem;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -6px 16px rgba(43, 38, 34, 0.08);
+}
+.waiting {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 0.4rem 0;
+}
+.controls { margin-top: 0; }
 .action-row { display: flex; gap: 0.6rem; margin-bottom: 0.9rem; }
 .action-row .poker-btn { flex: 1; }
 .raise-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
@@ -156,6 +174,7 @@
    don't overlap around the oval. */
 @media (max-width: 480px) {
   .poker-card { padding: 1rem 0.75rem 1.5rem; }
+  #action-bar { margin: 0 -0.75rem -1.5rem; padding: 0.6rem 0.75rem 0.8rem; }
   #table { aspect-ratio: 4 / 5; max-height: 80vh; }
   .seat { width: 74px; padding: 4px 2px 5px; }
   .seat-name { font-size: 0.7rem; }

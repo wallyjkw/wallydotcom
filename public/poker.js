@@ -196,6 +196,8 @@ if (typeof document !== "undefined") {
       table: document.getElementById("table"),
       message: document.getElementById("message"),
       controls: document.getElementById("controls"),
+      waiting: document.getElementById("waiting"),
+      afterHand: document.getElementById("after-hand"),
       dealNext: document.getElementById("deal-next"),
       rebuy: document.getElementById("rebuy"),
       fold: document.getElementById("btn-fold"),
@@ -415,6 +417,8 @@ if (typeof document !== "undefined") {
     function finishHand() {
       G.handOver = true;
       hideControls();
+      el.waiting.hidden = true;
+      el.afterHand.hidden = false;     // show deal/rebuy/leave
       render();
       var human = G.players[0];
       if (human.stack <= 0) {
@@ -435,6 +439,8 @@ if (typeof document !== "undefined") {
         showControls();
       } else {
         hideControls();
+        el.waiting.hidden = false;     // bots are acting
+        el.afterHand.hidden = true;
         clearTimeout(pendingTimer);
         pendingTimer = setTimeout(function () {
           var action = botDecision(G, p, potNow());
@@ -510,6 +516,8 @@ if (typeof document !== "undefined") {
     function showControls() {
       var p = G.players[0];
       var toCall = G.currentBet - p.bet;
+      el.waiting.hidden = true;
+      el.afterHand.hidden = true;
       el.controls.hidden = false;
 
       el.callBtn.textContent = toCall <= 0 ? "Check" : "Call " + money(Math.min(toCall, p.stack));
