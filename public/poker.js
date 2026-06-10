@@ -104,8 +104,12 @@ function handName(score) { return HAND_NAMES[score[0]]; }
 
 /* ------------------------------- Side pots ------------------------------- */
 // Given players with .totalBet and .folded, return [{amount, eligible:[player]}].
+// Pot boundaries are defined ONLY by the contribution levels of players still in
+// the hand (non-folded). Folded players' chips are dead money absorbed into those
+// layers — they never create their own side pot (that was the old bug).
 function buildPots(players) {
-  var levels = players
+  var contenders = players.filter(function (p) { return !p.folded; });
+  var levels = contenders
     .map(function (p) { return p.totalBet; })
     .filter(function (v) { return v > 0; });
   levels = levels.filter(function (v, i) { return levels.indexOf(v) === i; })
@@ -114,10 +118,13 @@ function buildPots(players) {
   var pots = [];
   var prev = 0;
   levels.forEach(function (level) {
-    var layer = level - prev;
-    var contributors = players.filter(function (p) { return p.totalBet >= level; });
-    var amount = layer * contributors.length;
-    var eligible = contributors.filter(function (p) { return !p.folded; });
+    // Every player (folded or not) contributes the slice of their bet that falls
+    // between the previous level and this one.
+    var amount = 0;
+    players.forEach(function (p) {
+      amount += Math.max(0, Math.min(p.totalBet, level) - prev);
+    });
+    var eligible = contenders.filter(function (p) { return p.totalBet >= level; });
     if (amount > 0) pots.push({ amount: amount, eligible: eligible });
     prev = level;
   });

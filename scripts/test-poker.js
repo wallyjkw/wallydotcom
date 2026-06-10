@@ -68,5 +68,32 @@ var p3 = [
 var total3 = P.buildPots(p3).reduce(function (s, p) { return s + p.amount; }, 0);
 ok(total3 === 375, "all contributed chips accounted for");
 
+// A folded partial contributor (e.g. a folded small blind) must NOT create a
+// side pot — it's just dead money in the single pot. (The reported bug.)
+var p4 = [
+  { name: "sb", totalBet: 1, folded: true },
+  { name: "a", totalBet: 10, folded: false },
+  { name: "b", totalBet: 10, folded: false }
+];
+var pots4 = P.buildPots(p4);
+ok(pots4.length === 1, "folded blind does not create a phantom side pot");
+ok(pots4[0].amount === 21, "single pot holds all 21 chips (1 + 10 + 10)");
+
+// Genuine all-in still makes a real side pot, with folded dead money absorbed.
+var p5 = [
+  { name: "folded", totalBet: 5, folded: true },   // folded after $5
+  { name: "shorty", totalBet: 40, folded: false }, // all-in $40
+  { name: "big1", totalBet: 100, folded: false },
+  { name: "big2", totalBet: 100, folded: false }
+];
+var pots5 = P.buildPots(p5);
+ok(pots5.length === 2, "real all-in still makes a side pot");
+ok(pots5[0].amount === 125 && pots5[0].eligible.length === 3,
+  "main pot 125 (5+40+40+40), 3 eligible");
+ok(pots5[1].amount === 120 && pots5[1].eligible.length === 2,
+  "side pot 120 (60+60), 2 eligible");
+ok(pots5.reduce(function (s, p) { return s + p.amount; }, 0) === 245,
+  "all chips conserved (5+40+100+100)");
+
 console.log("\n" + pass + " passed, " + fail + " failed.");
 process.exit(fail ? 1 : 0);
