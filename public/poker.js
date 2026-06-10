@@ -531,6 +531,17 @@ if (typeof document !== "undefined") {
     }
     function hideControls() { el.controls.hidden = true; }
 
+    // iOS Safari scrolls to the top when the focused button gets hidden after
+    // you act. Blur it first, then pin the scroll position across the re-render.
+    function preserveScroll(fn) {
+      var y = window.pageYOffset;
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      fn();
+      window.scrollTo(0, y);
+      requestAnimationFrame(function () { window.scrollTo(0, y); });
+      setTimeout(function () { window.scrollTo(0, y); }, 60);
+    }
+
     function updateRaiseLabel() {
       var p = G.players[0];
       var to = Number(el.slider.value);
@@ -542,16 +553,16 @@ if (typeof document !== "undefined") {
     el.slider.addEventListener("input", updateRaiseLabel);
 
     el.fold.addEventListener("click", function () {
-      if (G.players[G.currentToAct].isHuman) applyAction(0, { type: "fold" });
+      if (G.players[G.currentToAct].isHuman) preserveScroll(function () { applyAction(0, { type: "fold" }); });
     });
     el.callBtn.addEventListener("click", function () {
       if (!G.players[G.currentToAct].isHuman) return;
       var toCall = G.currentBet - G.players[0].bet;
-      applyAction(0, { type: toCall <= 0 ? "check" : "call" });
+      preserveScroll(function () { applyAction(0, { type: toCall <= 0 ? "check" : "call" }); });
     });
     el.raiseBtn.addEventListener("click", function () {
       if (!G.players[G.currentToAct].isHuman) return;
-      applyAction(0, { type: "raise", to: Number(el.slider.value) });
+      preserveScroll(function () { applyAction(0, { type: "raise", to: Number(el.slider.value) }); });
     });
     el.quick.addEventListener("click", function (e) {
       var btn = e.target.closest("button");
@@ -565,10 +576,11 @@ if (typeof document !== "undefined") {
       updateRaiseLabel();
     });
 
-    el.dealNext.addEventListener("click", startHand);
+    el.dealNext.addEventListener("click", function () {
+      preserveScroll(startHand);
+    });
     el.rebuy.addEventListener("click", function () {
-      G.players[0].stack = G.startStack;
-      startHand();
+      preserveScroll(function () { G.players[0].stack = G.startStack; startHand(); });
     });
 
     /* ------------------------------- setup ------------------------------- */
