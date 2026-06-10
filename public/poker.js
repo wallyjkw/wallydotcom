@@ -196,6 +196,7 @@ if (typeof document !== "undefined") {
 
     var G = null;        // game state
     var pendingTimer = null;
+    var pendingBotIdx = -1;   // which seat the in-flight bot action is for
 
     var el = {
       setup: document.getElementById("setup"),
@@ -204,6 +205,7 @@ if (typeof document !== "undefined") {
       message: document.getElementById("message"),
       controls: document.getElementById("controls"),
       waiting: document.getElementById("waiting"),
+      skip: document.getElementById("skip-hand"),
       afterHand: document.getElementById("after-hand"),
       dealNext: document.getElementById("deal-next"),
       rebuy: document.getElementById("rebuy"),
@@ -260,6 +262,8 @@ if (typeof document !== "undefined") {
       G.currentBet = 0;
       G.minRaise = G.bb;
       G.revealAll = false;
+      G.fastForward = false;
+      el.skip.hidden = true;
 
       G.players.forEach(function (p) {
         p.hole = []; p.bet = 0; p.totalBet = 0;
@@ -448,12 +452,22 @@ if (typeof document !== "undefined") {
         hideControls();
         el.waiting.hidden = false;     // bots are acting
         el.afterHand.hidden = true;
-        clearTimeout(pendingTimer);
-        pendingTimer = setTimeout(function () {
-          var action = botDecision(G, p, potNow());
-          applyAction(G.currentToAct, action);
-        }, 750);
+        var human = G.players[0];
+        // Offer Skip only when you can't act anymore (folded or all-in).
+        el.skip.hidden = G.fastForward || !(human.folded || human.allIn);
+        scheduleBot(G.currentToAct);
       }
+    }
+
+    function scheduleBot(idx) {
+      pendingBotIdx = idx;
+      clearTimeout(pendingTimer);
+      pendingTimer = setTimeout(function () { doBotStep(idx); }, G.fastForward ? 0 : 750);
+    }
+    function doBotStep(idx) {
+      pendingBotIdx = -1;
+      var p = G.players[idx];
+      applyAction(idx, botDecision(G, p, potNow()));
     }
 
     /* ----------------------------- rendering ----------------------------- */
@@ -634,7 +648,7 @@ if (typeof document !== "undefined") {
         players: players, startStack: startStack, sb: sb, bb: bb,
         button: Math.floor(Math.random() * n), board: [], pot: 0,
         deck: [], street: "preflop", currentBet: 0, minRaise: bb,
-        currentToAct: 0, revealAll: false, handOver: false
+        currentToAct: 0, revealAll: false, handOver: false, fastForward: false
       };
 
       el.setup.hidden = true;
@@ -643,10 +657,21 @@ if (typeof document !== "undefined") {
       startHand();
     });
 
-    document.getElementById("new-game").addEventListener("click", function () {
+    function leaveTable() {
       clearTimeout(pendingTimer);
       el.game.hidden = true;
       el.setup.hidden = false;
+    }
+    document.getElementById("new-game").addEventListener("click", leaveTable);
+    document.getElementById("leave-2").addEventListener("click", leaveTable);
+
+    // Fast-forward the rest of the hand once you're out of it.
+    el.skip.addEventListener("click", function () {
+      if (!G) return;
+      G.fastForward = true;
+      el.skip.hidden = true;
+      clearTimeout(pendingTimer);
+      if (pendingBotIdx >= 0 && !G.handOver) doBotStep(pendingBotIdx);
     });
   });
 }

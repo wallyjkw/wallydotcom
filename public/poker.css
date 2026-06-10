@@ -168,7 +168,11 @@
   box-shadow: 0 -6px 16px rgba(43, 38, 34, 0.08);
 }
 .waiting {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
   color: var(--muted);
   font-size: 0.9rem;
   padding: 0.4rem 0;
