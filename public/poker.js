@@ -517,8 +517,8 @@ if (typeof document !== "undefined") {
         var angle = (90 + G.button * 360 / n) * Math.PI / 180;
         var seatLeft = 50 + 40 * Math.cos(angle);
         var seatTop = 50 + 42 * Math.sin(angle);
-        dbtn.style.left = (seatLeft + (50 - seatLeft) * 0.22) + "%";
-        dbtn.style.top = (seatTop + (50 - seatTop) * 0.22) + "%";
+        dbtn.style.left = (seatLeft + (50 - seatLeft) * 0.38) + "%";
+        dbtn.style.top = (seatTop + (50 - seatTop) * 0.38) + "%";
       }
     }
 
