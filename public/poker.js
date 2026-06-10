@@ -549,7 +549,7 @@ if (typeof document !== "undefined") {
       }
 
       el.dealNext.disabled = !G.handOver;
-      el.dealNext.textContent = (G.handOver && human.stack <= 0) ? "Rebuy & deal" : "Deal next hand";
+      el.dealNext.textContent = (G.handOver && human.stack <= 0) ? "Rebuy" : "Next hand";
       // Skip only matters mid-hand when you can no longer act.
       el.skip.disabled = G.handOver || G.fastForward || !(human.folded || human.allIn);
       // Leave table is always enabled.
