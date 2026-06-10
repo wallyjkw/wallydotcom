@@ -203,18 +203,15 @@ if (typeof document !== "undefined") {
       game: document.getElementById("game"),
       table: document.getElementById("table"),
       message: document.getElementById("message"),
-      controls: document.getElementById("controls"),
-      waiting: document.getElementById("waiting"),
       skip: document.getElementById("skip-hand"),
-      afterHand: document.getElementById("after-hand"),
       dealNext: document.getElementById("deal-next"),
-      rebuy: document.getElementById("rebuy"),
       fold: document.getElementById("btn-fold"),
       callBtn: document.getElementById("btn-call"),
       raiseBtn: document.getElementById("btn-raise"),
       slider: document.getElementById("raise-slider"),
       raiseAmt: document.getElementById("raise-amt"),
       quick: document.getElementById("quick"),
+      quickBtns: Array.prototype.slice.call(document.querySelectorAll("#quick button")),
       numPlayers: document.getElementById("num-players"),
       startStack: document.getElementById("start-stack"),
       sb: document.getElementById("sb"),
@@ -243,8 +240,6 @@ if (typeof document !== "undefined") {
     /* --------------------------- hand lifecycle --------------------------- */
     function startHand() {
       el.message.textContent = "";
-      el.dealNext.hidden = true;
-      el.rebuy.hidden = true;
 
       // Cash game: bots that busted buy back in to the starting stack.
       G.players.forEach(function (p) {
@@ -263,7 +258,6 @@ if (typeof document !== "undefined") {
       G.minRaise = G.bb;
       G.revealAll = false;
       G.fastForward = false;
-      el.skip.hidden = true;
 
       G.players.forEach(function (p) {
         p.hole = []; p.bet = 0; p.totalBet = 0;
@@ -427,36 +421,14 @@ if (typeof document !== "undefined") {
 
     function finishHand() {
       G.handOver = true;
-      hideControls();
-      el.waiting.hidden = true;
-      el.afterHand.hidden = false;     // show deal/rebuy/leave
-      render();
-      var human = G.players[0];
-      if (human.stack <= 0) {
-        el.rebuy.hidden = false;       // busted — offer a top-up
-        el.dealNext.hidden = true;
-      } else {
-        el.dealNext.hidden = false;
-        el.rebuy.hidden = true;
-      }
+      render();                        // updateBar() enables Deal next hand
     }
 
     /* ------------------------------- driver ------------------------------- */
     function continuePlay() {
       G.handOver = false;
-      render();
-      var p = G.players[G.currentToAct];
-      if (p.isHuman) {
-        showControls();
-      } else {
-        hideControls();
-        el.waiting.hidden = false;     // bots are acting
-        el.afterHand.hidden = true;
-        var human = G.players[0];
-        // Offer Skip only when you can't act anymore (folded or all-in).
-        el.skip.hidden = G.fastForward || !(human.folded || human.allIn);
-        scheduleBot(G.currentToAct);
-      }
+      render();                        // updateBar() enables/disables the right buttons
+      if (!G.players[G.currentToAct].isHuman) scheduleBot(G.currentToAct);
     }
 
     function scheduleBot(idx) {
@@ -541,34 +513,47 @@ if (typeof document !== "undefined") {
         dbtn.style.left = (seatLeft + (50 - seatLeft) * 0.38) + "%";
         dbtn.style.top = (seatTop + (50 - seatTop) * 0.38) + "%";
       }
+
+      updateBar();
     }
 
-    /* --------------------------- human controls --------------------------- */
-    function showControls() {
-      var p = G.players[0];
-      var toCall = G.currentBet - p.bet;
-      el.waiting.hidden = true;
-      el.afterHand.hidden = true;
-      el.controls.hidden = false;
+    /* --------------------------- action bar --------------------------- */
+    // All buttons stay in the DOM; this just enables/disables and relabels them
+    // for the current state, so the bar never changes size.
+    function updateBar() {
+      var human = G.players[0];
+      var myTurn = !G.handOver && G.players[G.currentToAct] === human;
+      var toCall = G.currentBet - human.bet;
 
-      el.callBtn.textContent = toCall <= 0 ? "Check" : "Call " + money(Math.min(toCall, p.stack));
+      el.fold.disabled = !myTurn;
+      el.callBtn.disabled = !myTurn;
+      el.callBtn.textContent = toCall <= 0 ? "Check" : "Call " + money(Math.min(toCall, human.stack));
 
-      // Raise/bet range: min is a full raise (or all-in if short); max is all-in.
-      var minTo = Math.min(p.bet + p.stack, G.currentBet + G.minRaise);
-      var maxTo = p.bet + p.stack;
-      var canRaise = maxTo > G.currentBet; // has chips beyond a call
-      el.slider.disabled = !canRaise;
+      var maxTo = human.bet + human.stack;
+      var minTo = Math.min(maxTo, G.currentBet + G.minRaise);
+      var canRaise = myTurn && maxTo > G.currentBet;
+      var wasDisabled = el.raiseBtn.disabled;
       el.raiseBtn.disabled = !canRaise;
-      el.quick.style.display = canRaise ? "" : "none";
+      el.slider.disabled = !canRaise;
+      el.quickBtns.forEach(function (b) { b.disabled = !canRaise; });
       if (canRaise) {
-        el.slider.min = minTo;
-        el.slider.max = maxTo;
-        el.slider.step = 1;
-        el.slider.value = Math.min(maxTo, Math.max(minTo, Math.round(potNow() * 0.6) + G.currentBet));
+        el.slider.min = minTo; el.slider.max = maxTo; el.slider.step = 1;
+        var cur = Number(el.slider.value);
+        if (wasDisabled || cur < minTo || cur > maxTo) {  // set a default only when (re)enabling
+          el.slider.value = Math.min(maxTo, Math.max(minTo, Math.round(potNow() * 0.6) + G.currentBet));
+        }
         updateRaiseLabel();
+      } else {
+        el.raiseBtn.textContent = G.currentBet === 0 ? "Bet" : "Raise";
+        el.raiseAmt.textContent = "";
       }
+
+      el.dealNext.disabled = !G.handOver;
+      el.dealNext.textContent = (G.handOver && human.stack <= 0) ? "Rebuy & deal" : "Deal next hand";
+      // Skip only matters mid-hand when you can no longer act.
+      el.skip.disabled = G.handOver || G.fastForward || !(human.folded || human.allIn);
+      // Leave table is always enabled.
     }
-    function hideControls() { el.controls.hidden = true; }
 
     // iOS Safari scrolls to the top when the focused button gets hidden after
     // you act. Blur it first, then pin the scroll position across the re-render.
@@ -624,10 +609,10 @@ if (typeof document !== "undefined") {
     });
 
     el.dealNext.addEventListener("click", function () {
-      preserveScroll(startHand);
-    });
-    el.rebuy.addEventListener("click", function () {
-      preserveScroll(function () { G.players[0].stack = G.startStack; startHand(); });
+      preserveScroll(function () {
+        if (G.players[0].stack <= 0) G.players[0].stack = G.startStack;  // rebuy if busted
+        startHand();
+      });
     });
 
     /* ------------------------------- setup ------------------------------- */

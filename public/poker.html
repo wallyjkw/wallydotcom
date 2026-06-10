@@ -47,34 +47,28 @@
             <div id="message" class="poker-message"></div>
             <div id="table"></div>
 
-            <!-- Action bar is pinned to the bottom of the screen so the buttons
-                 are always visible without scrolling, no matter where you are. -->
+            <!-- Action bar is pinned to the bottom of the screen. Every button is
+                 always present and just disabled when it doesn't apply, so the bar
+                 keeps a constant size and never shifts the page. -->
             <div id="action-bar">
-                <div id="waiting" class="waiting" hidden>
-                    <button id="skip-hand" class="poker-btn small" hidden>⏭ Skip hand</button>
+                <div class="action-row">
+                    <button id="btn-fold" class="poker-btn">Fold</button>
+                    <button id="btn-call" class="poker-btn">Check</button>
+                    <button id="btn-raise" class="poker-btn primary">Raise</button>
                 </div>
-
-                <div id="controls" class="controls" hidden>
-                    <div class="action-row">
-                        <button id="btn-fold" class="poker-btn">Fold</button>
-                        <button id="btn-call" class="poker-btn">Check</button>
-                        <button id="btn-raise" class="poker-btn primary">Raise</button>
-                    </div>
-                    <div class="raise-row">
-                        <input type="range" id="raise-slider" min="0" max="100" value="0">
-                        <span id="raise-amt"></span>
-                    </div>
-                    <div id="quick" class="quick">
-                        <button class="poker-btn small" data-frac="0.5">½ Pot</button>
-                        <button class="poker-btn small" data-frac="0.75">¾ Pot</button>
-                        <button class="poker-btn small" data-frac="1">Pot</button>
-                        <button class="poker-btn small" data-frac="allin">All-in</button>
-                    </div>
+                <div class="raise-row">
+                    <input type="range" id="raise-slider" min="0" max="100" value="0">
+                    <span id="raise-amt"></span>
                 </div>
-
-                <div id="after-hand" class="after-hand" hidden>
-                    <button id="deal-next" class="poker-btn primary" hidden>Deal next hand</button>
-                    <button id="rebuy" class="poker-btn primary" hidden>Rebuy (top up) ♻</button>
+                <div id="quick" class="quick">
+                    <button class="poker-btn small" data-frac="0.5">½ Pot</button>
+                    <button class="poker-btn small" data-frac="0.75">¾ Pot</button>
+                    <button class="poker-btn small" data-frac="1">Pot</button>
+                    <button class="poker-btn small" data-frac="allin">All-in</button>
+                </div>
+                <div class="table-row">
+                    <button id="deal-next" class="poker-btn primary">Deal next hand</button>
+                    <button id="skip-hand" class="poker-btn">⏭ Skip hand</button>
                     <button id="new-game" class="poker-btn">Leave table</button>
                 </div>
             </div>

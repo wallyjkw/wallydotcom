@@ -186,7 +186,16 @@
 .quick { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .quick .poker-btn { flex: 1; }
 
-.after-hand { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
+/* Deal / Skip / Leave row — always present, separated from the action buttons. */
+.table-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.table-row .poker-btn { flex: 1; white-space: nowrap; }
 
 /* Narrow phones: taller table fills the screen better, smaller seats so they
    don't overlap around the oval. */
