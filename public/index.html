@@ -1,14 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Wally Dot Com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WallyDotCom</title>
+    <style>
+      :root {
+        --ink: #2b2622;
+        --muted: #7a7066;
+        --accent: #b5651d;       /* warm whiskey amber */
+        --bg: #faf6f0;
+        --card: #ffffff;
+        --line: #ece4d8;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        display: flex;
+        justify-content: center;
+        padding: 2.5rem 1.25rem;
+      }
+      .card {
+        background: var(--card);
+        max-width: 600px;
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 2.5rem 2.25rem;
+        box-shadow: 0 10px 30px rgba(43, 38, 34, 0.06);
+      }
+      .wordmark {
+        font-size: 0.8rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+      }
+      h1 {
+        font-size: 2rem;
+        margin: 0 0 1.25rem;
+        line-height: 1.2;
+      }
+      .tags {
+        margin: 0 0 1.75rem;
+        color: var(--ink);
+      }
+      .tags span {
+        display: block;
+        font-weight: 600;
+      }
+      h2 {
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 1.75rem 0 0.6rem;
+      }
+      ul {
+        margin: 0;
+        padding-left: 1.2rem;
+      }
+      ul li { margin: 0.15rem 0; }
+      .project {
+        background: var(--bg);
+        border-left: 3px solid var(--accent);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        margin-top: 0.4rem;
+      }
+      .intro { margin-top: 1.75rem; color: var(--muted); }
+      footer {
+        margin-top: 2.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--line);
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      footer #count { color: var(--accent); font-weight: 700; }
+    </style>
 </head>
 <body>
-    <h1>Wally Dot Com</h1>
-    <p>Yes, this is Wally Dot Com.</p>
-    <p>Deployed from GitHub via Cloudflare. 🚀</p>
-    <p>You are visitor #<span id="count">…</span></p>
+    <main class="card">
+        <div class="wordmark">WallyDotCom</div>
+
+        <h1>Howdy, I'm Wally. 👋</h1>
+
+        <p class="tags">
+            <span>Walker.</span>
+            <span>Father of five.</span>
+            <span>Software developer.</span>
+            <span>Poker host.</span>
+            <span>Amateur cocktail maker.</span>
+        </p>
+
+        <h2>Current interests</h2>
+        <ul>
+            <li>AI coding assistants</li>
+            <li>Vintage VB6 software</li>
+            <li>Walking trails</li>
+            <li>Cocktails</li>
+            <li>Cooking</li>
+        </ul>
+
+        <h2>Latest project</h2>
+        <div class="project">Learning how to build and deploy websites with AI.</div>
+
+        <p class="intro">This site is where I keep notes, projects, and other random stuff.</p>
+
+        <footer>
+            You're visitor #<span id="count">…</span> 🚀
+        </footer>
+    </main>
 
     <script>
       // Ask our Worker for the current visitor count and show it.
