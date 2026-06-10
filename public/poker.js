@@ -212,6 +212,7 @@ if (typeof document !== "undefined") {
       raiseAmt: document.getElementById("raise-amt"),
       quick: document.getElementById("quick"),
       quickBtns: Array.prototype.slice.call(document.querySelectorAll("#quick button")),
+      allinBtn: document.getElementById("btn-allin"),
       numPlayers: document.getElementById("num-players"),
       startStack: document.getElementById("start-stack"),
       sb: document.getElementById("sb"),
@@ -223,6 +224,17 @@ if (typeof document !== "undefined") {
       return G.players.reduce(function (a, p) { return a + p.bet; }, 0);
     }
     function potNow() { return G.pot + sumBets(); }
+    // The most you can usefully wager this street: capped at the largest total any
+    // non-folded opponent could still match. Betting beyond that is just returned.
+    function effectiveAllInTo(human) {
+      var myMax = human.bet + human.stack;
+      var oppMax = 0;
+      G.players.forEach(function (p) {
+        if (p === human || p.folded) return;
+        oppMax = Math.max(oppMax, p.bet + p.stack);
+      });
+      return oppMax ? Math.min(myMax, oppMax) : myMax;
+    }
     function activePlayers() { return G.players.filter(function (p) { return !p.folded; }); }
     function canStillBet() {
       return G.players.filter(function (p) { return !p.folded && !p.allIn; }).length >= 2;
@@ -529,13 +541,15 @@ if (typeof document !== "undefined") {
       el.callBtn.disabled = !myTurn;
       el.callBtn.textContent = toCall <= 0 ? "Check" : "Call " + money(Math.min(toCall, human.stack));
 
-      var maxTo = human.bet + human.stack;
+      // Cap the max raise at the effective all-in, not your whole stack.
+      var maxTo = myTurn ? effectiveAllInTo(human) : human.bet + human.stack;
       var minTo = Math.min(maxTo, G.currentBet + G.minRaise);
       var canRaise = myTurn && maxTo > G.currentBet;
       var wasDisabled = el.raiseBtn.disabled;
       el.raiseBtn.disabled = !canRaise;
       el.slider.disabled = !canRaise;
       el.quickBtns.forEach(function (b) { b.disabled = !canRaise; });
+      el.allinBtn.textContent = canRaise ? "All-in " + money(maxTo) : "All-in";
       if (canRaise) {
         el.slider.min = minTo; el.slider.max = maxTo; el.slider.step = 1;
         var cur = Number(el.slider.value);
@@ -567,10 +581,10 @@ if (typeof document !== "undefined") {
     }
 
     function updateRaiseLabel() {
-      var p = G.players[0];
       var to = Number(el.slider.value);
+      var atMax = to >= Number(el.slider.max);   // max is the effective all-in
       var verb = G.currentBet === 0 ? "Bet " : "Raise to ";
-      el.raiseBtn.textContent = (to >= p.bet + p.stack ? "All-in " : verb) + money(to);
+      el.raiseBtn.textContent = (atMax ? "All-in " : verb) + money(to);
       el.raiseAmt.textContent = money(to);
     }
 
@@ -598,13 +612,12 @@ if (typeof document !== "undefined") {
     });
     el.quick.addEventListener("click", function (e) {
       var btn = e.target.closest("button");
-      if (!btn) return;
-      var p = G.players[0];
-      var maxTo = p.bet + p.stack;
+      if (!btn || btn.disabled) return;
+      var max = Number(el.slider.max);   // effective all-in
       var to;
-      if (btn.dataset.frac === "allin") to = maxTo;
+      if (btn.dataset.frac === "allin") to = max;
       else to = G.currentBet + Math.round(potNow() * Number(btn.dataset.frac));
-      el.slider.value = Math.min(maxTo, Math.max(Number(el.slider.min), to));
+      el.slider.value = Math.min(max, Math.max(Number(el.slider.min), to));
       updateRaiseLabel();
     });
 
