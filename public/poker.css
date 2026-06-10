@@ -1,0 +1,156 @@
+/* Poker page styles — layered on top of the shared style.css */
+
+.poker-card { max-width: 720px; }
+
+/* ------------------------------- Setup ------------------------------- */
+#setup { margin-top: 1.5rem; }
+.field { margin-bottom: 1.1rem; }
+.field-row { display: flex; gap: 1rem; }
+.field-row .field { flex: 1; }
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+#setup select, #setup input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--ink);
+  background: #fffdfa;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+#setup select:focus, #setup input:focus { outline: none; border-color: var(--accent); }
+
+/* ------------------------------- Buttons ------------------------------- */
+.poker-btn {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fffdfa;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.7rem 1.1rem;
+  cursor: pointer;
+}
+.poker-btn:hover:not(:disabled) { border-color: var(--accent); }
+.poker-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.poker-btn.primary:hover:not(:disabled) { filter: brightness(1.05); }
+.poker-btn.small { padding: 0.5rem 0.7rem; font-size: 0.85rem; }
+.poker-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ------------------------------- Message ------------------------------- */
+.poker-message {
+  min-height: 1.4rem;
+  margin: 0.5rem 0 1rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.5;
+}
+
+/* ------------------------------- Table ------------------------------- */
+#table {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin: 0.5rem 0 1.25rem;
+  background: radial-gradient(ellipse at center, #2e7d4f 0%, #1f5d3a 70%, #194b2f 100%);
+  border: 6px solid #6b4a2b;
+  border-radius: 48% / 46%;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.35);
+}
+
+#board {
+  position: absolute;
+  left: 50%; top: 38%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 4px;
+  min-height: 44px;
+}
+#pot-label {
+  position: absolute;
+  left: 50%; top: 56%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+#dealer-btn {
+  position: absolute;
+  width: 22px; height: 22px;
+  margin: 26px 0 0 26px;          /* nudge off the seat toward the center */
+  transform: translate(-50%, -50%);
+  background: #fff; color: #194b2f;
+  border-radius: 50%;
+  font-size: 0.7rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ------------------------------- Seats ------------------------------- */
+.seat {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 92px;
+  text-align: center;
+  background: rgba(20, 40, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 5px 4px 6px;
+  color: #f4efe8;
+}
+.seat.active { border-color: #ffd479; box-shadow: 0 0 0 2px #ffd479; }
+.seat.human { background: rgba(60, 40, 20, 0.9); }
+.seat.folded { opacity: 0.45; }
+.seat-name { font-size: 0.78rem; font-weight: 600; margin-top: 2px; }
+.seat-stack { font-size: 0.74rem; color: #bfe6cc; }
+.seat-bet {
+  font-size: 0.72rem; font-weight: 700; color: #ffd479;
+  margin-top: 2px;
+}
+.seat-cards { display: flex; gap: 3px; justify-content: center; min-height: 30px; }
+.folded-label { font-size: 0.72rem; font-style: italic; color: #cbb; }
+
+/* Playing cards */
+.pcard {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  min-width: 26px; height: 36px;
+  padding: 0 3px;
+  background: #fff; color: #1a1a1a;
+  border-radius: 4px;
+  font-size: 0.8rem; font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.pcard.red { color: #c62828; }
+.pcard.back {
+  background: repeating-linear-gradient(45deg, #b5651d, #b5651d 4px, #9a531a 4px, #9a531a 8px);
+}
+#board .pcard { min-width: 30px; height: 42px; font-size: 0.9rem; }
+
+/* ------------------------------- Controls ------------------------------- */
+.controls { margin-top: 0.5rem; }
+.action-row { display: flex; gap: 0.6rem; margin-bottom: 0.9rem; }
+.action-row .poker-btn { flex: 1; }
+.raise-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
+.raise-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+#raise-amt { font-weight: 700; min-width: 70px; text-align: right; }
+.quick { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.quick .poker-btn { flex: 1; }
+
+.after-hand { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
+
+/* Narrow phones: shrink seats a touch so they don't overlap */
+@media (max-width: 480px) {
+  .seat { width: 74px; padding: 4px 2px 5px; }
+  .seat-name { font-size: 0.7rem; }
+  .pcard { min-width: 20px; height: 30px; font-size: 0.7rem; }
+}
