@@ -257,7 +257,7 @@ if (typeof document !== "undefined") {
       G.players.forEach(function (p) {
         p.hole = []; p.bet = 0; p.totalBet = 0;
         p.folded = p.stack <= 0; // no chips => sit this hand out
-        p.allIn = false; p.acted = false;
+        p.allIn = false; p.acted = false; p.peeked = false;
       });
 
       // Deal two cards each (only to players in the hand).
@@ -486,17 +486,27 @@ if (typeof document !== "undefined") {
       G.players.forEach(function (p, i) {
         var seat = document.getElementById("seat-" + i);
         var isTurn = (i === G.currentToAct) && !G.handOver;
-        var reveal = p.isHuman || (G.revealAll && !p.folded);
-        var cards = p.folded
-          ? '<span class="folded-label">folded</span>'
-          : p.hole.map(function (c) { return cardHTML(c, !reveal); }).join("");
+        // Cards are face-up for you, for non-folders at showdown, or for any
+        // bot you've chosen to peek at once the hand is over.
+        var reveal = p.isHuman || (G.handOver && p.peeked) || (G.revealAll && !p.folded);
+        var hasCards = p.hole.length > 0;
+        var showPeek = G.handOver && !p.isHuman && !reveal && hasCards;
+
+        var cards;
+        if (!hasCards) cards = "";
+        else if (reveal) cards = p.hole.map(function (c) { return cardHTML(c, false); }).join("");
+        else if (p.folded) cards = '<span class="folded-label">folded</span>';
+        else cards = p.hole.map(function (c) { return cardHTML(c, true); }).join("");
+
         seat.className = "seat" + (isTurn ? " active" : "") + (p.folded ? " folded" : "") +
           (p.isHuman ? " human" : "");
         seat.innerHTML =
           '<div class="seat-cards">' + cards + "</div>" +
           '<div class="seat-name">' + p.name + (p.allIn ? " (all-in)" : "") + "</div>" +
           '<div class="seat-stack">' + money(p.stack) + "</div>" +
-          (p.bet > 0 ? '<div class="seat-bet">' + money(p.bet) + "</div>" : "");
+          (p.bet > 0 ? '<div class="seat-bet">' + money(p.bet) + "</div>" : "") +
+          (showPeek ? '<button class="peek-btn" data-peek="' + i + '">👁 cards</button>' : "") +
+          (reveal && p.folded && G.handOver ? '<div class="peek-note">folded</div>' : "");
       });
 
       // Position the dealer button between the button player's seat and the
@@ -559,6 +569,14 @@ if (typeof document !== "undefined") {
     }
 
     el.slider.addEventListener("input", updateRaiseLabel);
+
+    // Tap a seat's 👁 button after a hand to reveal what that player held.
+    el.table.addEventListener("click", function (e) {
+      var btn = e.target.closest(".peek-btn");
+      if (!btn || !G || !G.handOver) return;
+      var idx = Number(btn.dataset.peek);
+      preserveScroll(function () { G.players[idx].peeked = true; render(); });
+    });
 
     el.fold.addEventListener("click", function () {
       if (G.players[G.currentToAct].isHuman) preserveScroll(function () { applyAction(0, { type: "fold" }); });

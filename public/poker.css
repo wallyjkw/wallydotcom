@@ -122,6 +122,20 @@
 }
 .seat-cards { display: flex; gap: 3px; justify-content: center; min-height: 30px; }
 .folded-label { font-size: 0.72rem; font-style: italic; color: #cbb; }
+.peek-btn {
+  margin-top: 4px;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #194b2f;
+  background: #ffd479;
+  border: none;
+  border-radius: 6px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.peek-btn:hover { filter: brightness(1.05); }
+.peek-note { font-size: 0.66rem; font-style: italic; color: #cbb; margin-top: 2px; }
 
 /* Playing cards */
 .pcard {
