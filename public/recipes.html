@@ -14,8 +14,18 @@
         <h1>Recipes 🍳</h1>
         <p class="intro">A growing collection — cocktails, cooking, and whatever else is worth keeping.</p>
 
+        <input type="search" id="recipe-search" class="recipe-search"
+               placeholder="Search recipes &amp; ingredients…" autocomplete="off"
+               aria-label="Search recipes and ingredients">
+
+        <!-- Results appear here while searching; the grouped categories below hide. -->
+        <ul class="recipe-links" id="search-results" hidden></ul>
+        <p class="empty" id="search-empty" hidden>No recipes match that.</p>
+
         <!-- Recipes are grouped by category. To ADD a recipe, put its <li> under the
-             right <h2> category below. To ADD a new category, copy an <h2> + <ul> block. -->
+             right <h2> category below. To ADD a new category, copy an <h2> + <ul> block.
+             After adding/editing recipes, rebuild search: node scripts/build-search-index.js -->
+        <div id="recipe-categories">
 
         <h2 class="category">🍸 Cocktails</h2>
         <ul class="recipe-links">
@@ -54,6 +64,48 @@
         <ul class="recipe-links">
             <li><a href="/recipes/taco-seasoning">Taco Seasoning</a></li>
         </ul>
+
+        </div><!-- /#recipe-categories -->
     </main>
+
+    <script>
+    (function () {
+        var box = document.getElementById("recipe-search");
+        var results = document.getElementById("search-results");
+        var empty = document.getElementById("search-empty");
+        var categories = document.getElementById("recipe-categories");
+        var index = [];
+
+        // Load the prebuilt search index (name + ingredient/step text per recipe).
+        fetch("/recipes/search-index.json")
+            .then(function (r) { return r.json(); })
+            .then(function (data) { index = data; })
+            .catch(function () { /* leave search disabled if it can't load */ });
+
+        box.addEventListener("input", function () {
+            var q = box.value.trim().toLowerCase();
+
+            if (!q) {                       // empty box → show normal categories
+                results.hidden = true;
+                empty.hidden = true;
+                categories.hidden = false;
+                results.innerHTML = "";
+                return;
+            }
+
+            categories.hidden = true;       // searching → hide categories, show matches
+            var matches = index.filter(function (r) {
+                return r.name.toLowerCase().indexOf(q) !== -1 || r.text.indexOf(q) !== -1;
+            });
+
+            results.innerHTML = matches.map(function (r) {
+                return '<li><a href="/recipes/' + r.slug + '">' + r.name + "</a></li>";
+            }).join("");
+
+            results.hidden = matches.length === 0;
+            empty.hidden = matches.length !== 0;
+        });
+    })();
+    </script>
 </body>
 </html>

@@ -92,6 +92,27 @@ ul li { margin: 0.15rem 0; }
 }
 .button-link:hover { filter: brightness(1.05); }
 
+/* Recipe search box */
+.recipe-search {
+  display: block;
+  width: 100%;
+  margin: 1.5rem 0 0.5rem;
+  padding: 0.85rem 1.1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--ink);
+  background: #fffdfa;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.recipe-search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.recipe-search::placeholder { color: var(--muted); }
+
 /* Recipe index — list of links */
 .recipe-links { list-style: none; padding: 0; margin: 0.6rem 0 0; }
 .recipe-links li { margin: 0.6rem 0; }
