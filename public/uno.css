@@ -1,0 +1,304 @@
+/* Uno page styles — layered on top of the shared style.css */
+
+/* A touch wider than the rest of the site so the table has room, but narrower
+   than poker since Uno is mostly a vertical stack. */
+.uno-card { max-width: 760px; padding: 1.5rem 1.5rem 2rem; }
+
+/* ------------------------------- Setup ------------------------------- */
+#setup { margin-top: 1.5rem; }
+.field { margin-bottom: 1.25rem; }
+.field > label:first-child {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+#setup select {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--ink);
+  background: #fffdfa;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+#setup select:focus { outline: none; border-color: var(--accent); }
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  margin: 0.5rem 0;
+  cursor: pointer;
+}
+.check input { margin-top: 0.2rem; accent-color: var(--accent); }
+
+/* ------------------------------- Buttons ------------------------------- */
+.uno-btn {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fffdfa;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+.uno-btn:hover:not(:disabled) { border-color: var(--accent); }
+.uno-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.uno-btn.primary:hover:not(:disabled) { filter: brightness(1.05); }
+.uno-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ------------------------------- Message ------------------------------- */
+.uno-message {
+  min-height: 1.4rem;
+  margin: 0.5rem 0 1rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.5;
+}
+
+/* ------------------------------- Opponents ------------------------------- */
+#opponents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.opp {
+  flex: 0 0 auto;
+  min-width: 96px;
+  text-align: center;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.5rem 0.6rem;
+}
+.opp.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.opp.winner { border-color: #2f9e44; box-shadow: 0 0 0 2px #2f9e44; }
+.opp-name { font-size: 0.85rem; font-weight: 700; }
+.opp-count { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+.opp-cards { display: flex; gap: 2px; justify-content: center; min-height: 30px; }
+.opp-uno {
+  display: inline-block;
+  margin-top: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #fff;
+  background: #d8362a;
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+
+/* ------------------------------- Felt / center ------------------------------- */
+#felt {
+  background: radial-gradient(ellipse at center, #2e7d4f 0%, #1f5d3a 75%, #194b2f 100%);
+  border: 5px solid #6b4a2b;
+  border-radius: 18px;
+  box-shadow: inset 0 0 26px rgba(0, 0, 0, 0.35);
+  padding: 1.25rem 1rem;
+  margin-bottom: 1rem;
+}
+#center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+}
+#discard { min-width: 64px; min-height: 92px; display: flex; }
+#status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+}
+#color-dot {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  background: #ccc;
+}
+#color-dot.r { background: #d8362a; }
+#color-dot.y { background: #e8a200; }
+#color-dot.g { background: #2f9e44; }
+#color-dot.b { background: #1f6feb; }
+#dir-arrow {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  line-height: 1;
+}
+
+/* ------------------------------- Your hand ------------------------------- */
+.hand-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+#hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  min-height: 70px;
+}
+
+/* ------------------------------- Uno cards ------------------------------- */
+.ucard {
+  position: relative;
+  width: 46px; height: 68px;
+  border: none;
+  border-radius: 9px;
+  padding: 0;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 800;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  cursor: default;
+  flex: 0 0 auto;
+}
+.ucard.r { background: #d8362a; }
+.ucard.y { background: #e8a200; }
+.ucard.g { background: #2f9e44; }
+.ucard.b { background: #1f6feb; }
+.ucard.wild { background: #1a1a1a; }
+
+.ucard .oval {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) rotate(-20deg);
+  width: 74%; height: 56%;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.ucard .glyph { transform: rotate(20deg); font-size: 1.05rem; line-height: 1; }
+.ucard.r .glyph { color: #d8362a; }
+.ucard.y .glyph { color: #e8a200; }
+.ucard.g .glyph { color: #2f9e44; }
+.ucard.b .glyph { color: #1f6feb; }
+.ucard.wild .oval {
+  background: conic-gradient(#d8362a 0 25%, #e8a200 0 50%, #2f9e44 0 75%, #1f6feb 0);
+}
+.ucard.wild .glyph { color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); }
+
+.ucard .corner {
+  position: absolute;
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+.ucard .corner.tl { top: 3px; left: 5px; }
+.ucard .corner.br { bottom: 3px; right: 5px; transform: rotate(180deg); }
+
+/* Card backs (draw pile, opponent hands) */
+.ucard.back { background: #1a1a1a; border: 2px solid #fff; }
+.ucard.back::after {
+  content: "UNO";
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) rotate(-20deg);
+  color: #e8a200;
+  font-size: 0.6rem;
+  font-weight: 900;
+  font-style: italic;
+}
+
+/* Bigger card in the center piles */
+.ucard.big { width: 64px; height: 92px; }
+.ucard.big .glyph { font-size: 1.5rem; }
+.ucard.big .corner { font-size: 0.72rem; }
+#draw-pile { cursor: pointer; }
+#draw-pile:hover { filter: brightness(1.15); }
+
+/* Tiny backs in opponent seats */
+.opp-cards .ucard.back {
+  width: 20px; height: 30px;
+  border-width: 1px;
+}
+.opp-cards .ucard.back::after { font-size: 0.4rem; }
+
+/* Hand interactivity: playable cards lift and glow; the rest dim. */
+#hand .ucard.playable { cursor: pointer; outline: 3px solid #ffd479; }
+#hand .ucard.playable:hover { transform: translateY(-6px); }
+#hand .ucard.dim { opacity: 0.45; }
+
+/* ------------------------------- Action bar ------------------------------- */
+#action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  margin: 0 -1.5rem -2rem;
+  padding: 0.6rem 1.5rem 0.7rem;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -6px 16px rgba(43, 38, 34, 0.08);
+}
+.uno-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.uno-row:last-child { margin-bottom: 0; }
+.uno-row .uno-btn { flex: 1; }
+
+/* ------------------------------- Color picker ------------------------------- */
+#color-picker {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 18, 16, 0.55);
+}
+.cp-box {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: min(92vw, 320px);
+}
+.cp-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+.cp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.cp-btn {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 1.1rem 0.5rem;
+  cursor: pointer;
+}
+.cp-btn:hover { filter: brightness(1.08); }
+.cp-btn.r { background: #d8362a; }
+.cp-btn.y { background: #e8a200; }
+.cp-btn.g { background: #2f9e44; }
+.cp-btn.b { background: #1f6feb; }
+
+/* ------------------------------- Phones ------------------------------- */
+@media (max-width: 480px) {
+  .uno-card { padding: 1rem 0.75rem 1.5rem; }
+  #action-bar { margin: 0 -0.75rem -1.5rem; padding: 0.6rem 0.75rem 0.8rem; }
+  .opp { min-width: 80px; }
+  .ucard { width: 42px; height: 62px; }
+  .ucard .glyph { font-size: 0.95rem; }
+}

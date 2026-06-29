@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uno · WallyDotCom</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/uno.css">
+</head>
+<body>
+    <main class="card uno-card">
+        <a class="backlink" href="/">← Back to WallyDotCom</a>
+
+        <div class="wordmark">WallyDotCom</div>
+        <h1>Uno 🃏</h1>
+
+        <!-- Setup screen -->
+        <div id="setup">
+            <div class="field">
+                <label for="num-players">Players (you + computer)</label>
+                <select id="num-players">
+                    <option>2</option><option>3</option>
+                    <option selected>4</option><option>5</option><option>6</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>House rules</label>
+                <label class="check"><input type="checkbox" id="rule-stacking" checked> Stacking — pass +2 / +4 penalties along</label>
+                <label class="check"><input type="checkbox" id="rule-drawtoplay"> Draw until you can play (otherwise draw one, then pass)</label>
+                <label class="check"><input type="checkbox" id="rule-mustplay"> Must play if you have a playable card</label>
+            </div>
+
+            <button id="start-game" class="uno-btn primary">Deal 🃏</button>
+        </div>
+
+        <!-- Game screen -->
+        <div id="game" hidden>
+            <div id="message" class="uno-message"></div>
+
+            <div id="opponents"></div>
+
+            <div id="felt">
+                <div id="center">
+                    <button id="draw-pile" class="ucard back big" aria-label="Draw a card"></button>
+                    <div id="discard"></div>
+                    <div id="status">
+                        <span id="color-dot" aria-label="Current color"></span>
+                        <span id="dir-arrow" aria-label="Play direction">↻</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="hand-area">
+                <div class="hand-label">Your hand · <span id="hand-count">0</span></div>
+                <div id="hand"></div>
+            </div>
+
+            <!-- Action bar sticks to the bottom; buttons are always present and just
+                 enabled/disabled so the bar never changes size. -->
+            <div id="action-bar">
+                <div class="uno-row">
+                    <button id="btn-draw" class="uno-btn primary">Draw</button>
+                    <button id="btn-pass" class="uno-btn">Pass</button>
+                </div>
+                <div class="uno-row">
+                    <button id="btn-again" class="uno-btn primary" hidden>Play again</button>
+                    <button id="btn-leave" class="uno-btn">Leave</button>
+                </div>
+            </div>
+
+            <!-- Wild colour chooser, shown after you play a Wild / Wild Draw Four. -->
+            <div id="color-picker" hidden>
+                <div class="cp-box">
+                    <div class="cp-title">Pick a color</div>
+                    <div class="cp-grid">
+                        <button class="cp-btn r" data-color="r">Red</button>
+                        <button class="cp-btn y" data-color="y">Yellow</button>
+                        <button class="cp-btn g" data-color="g">Green</button>
+                        <button class="cp-btn b" data-color="b">Blue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/uno.js"></script>
+</body>
+</html>
