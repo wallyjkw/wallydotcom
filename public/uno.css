@@ -262,6 +262,9 @@
   justify-content: center;
   background: rgba(20, 18, 16, 0.55);
 }
+/* The ID rule above outranks the built-in [hidden] { display: none }, so spell
+   out the hidden state explicitly or the overlay shows on load and never closes. */
+#color-picker[hidden] { display: none; }
 .cp-box {
   background: var(--card);
   border-radius: 16px;
