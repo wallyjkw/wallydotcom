@@ -5,9 +5,13 @@
   "main": "src/worker.js",
   "compatibility_date": "2026-06-10",
   // Static files (index.html, etc.) served from this folder.
+  // run_worker_first: the Worker runs on every request (then serves assets via
+  // env.ASSETS) so it can inject the "tried it" script into recipe pages. Without
+  // this, matching assets are served directly and the Worker never sees them.
   "assets": {
     "directory": "./public",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "run_worker_first": true
   },
   // The persistent "sticky note" that remembers the visitor count.
   "kv_namespaces": [
