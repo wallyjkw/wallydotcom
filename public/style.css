@@ -159,8 +159,8 @@ ul li { margin: 0.15rem 0; }
   padding: 0;
   margin: 1rem 0 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.4rem;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.75rem;
 }
 .cocktail-links li { margin: 0; }
 .cocktail-links a {
@@ -200,7 +200,7 @@ ol li { margin: 0.2rem 0; }
 }
 .tried-toggle input { width: 1.15rem; height: 1.15rem; accent-color: #2f9e44; margin: 0; }
 .tried-toggle.is-tried { border-color: #2f9e44; color: #2f9e44; }
-.recipe-links .tried-check { color: #2f9e44; font-weight: 700; margin-left: 0.4rem; }
+.tried-check { color: #2f9e44; font-weight: 700; margin-left: 0.4rem; }
 
 footer {
   margin-top: 2.25rem;
