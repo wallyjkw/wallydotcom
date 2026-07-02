@@ -151,6 +151,30 @@ ul li { margin: 0.15rem 0; }
   margin-top: 0.15rem;
 }
 
+/* Cocktails page — compact multi-column list */
+.cocktails-card { max-width: 760px; }
+.cocktail-links {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.4rem;
+}
+.cocktail-links li { margin: 0; }
+.cocktail-links a {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: #fffdfa;
+}
+.cocktail-links a:hover { border-color: var(--accent); }
+
 /* Individual recipe pages */
 .meta { color: var(--muted); font-size: 0.9rem; margin: -0.5rem 0 1.5rem; }
 ol { margin: 0; padding-left: 1.2rem; }

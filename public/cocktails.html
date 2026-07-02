@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cocktails · WallyDotCom</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <main class="card cocktails-card">
+        <a class="backlink" href="/">← Back to WallyDotCom</a>
+
+        <div class="wordmark">WallyDotCom</div>
+        <h1>Cocktails 🍸</h1>
+        <p class="intro">Every cocktail worth keeping. Open one and tap <strong>Tried it</strong> to track what you've made — then filter below.</p>
+
+        <input type="search" id="recipe-search" class="recipe-search"
+               placeholder="Search cocktails &amp; ingredients…" autocomplete="off"
+               aria-label="Search cocktails and ingredients">
+
+        <!-- Show all / only tried / only not-tried. -->
+        <div class="recipe-filter" id="recipe-filter" role="group" aria-label="Filter by tried">
+            <button type="button" class="filter-btn is-active" data-filter="all">All</button>
+            <button type="button" class="filter-btn" data-filter="tried">Tried ✓</button>
+            <button type="button" class="filter-btn" data-filter="untried">Not tried</button>
+        </div>
+
+        <!-- Search / filter results appear here; the full list below hides. -->
+        <ul class="cocktail-links" id="search-results" hidden></ul>
+        <p class="empty" id="search-empty" hidden>No cocktails match that.</p>
+
+        <!-- Full list (compact multi-column). To ADD a cocktail, drop its <li> in
+             the right alphabetical spot, then rebuild: node scripts/build-search-index.js -->
+        <ul class="cocktail-links" id="cocktail-list">
+            <li><a href="/recipes/amaretto-sour">Amaretto Sour</a></li>
+            <li><a href="/recipes/american-trilogy">American Trilogy</a></li>
+            <li><a href="/recipes/apple-cider-old-fashioned">Apple Cider Old Fashioned</a></li>
+            <li><a href="/recipes/apple-jack">Apple Jack</a></li>
+            <li><a href="/recipes/bentons-bacon-old-fashioned">Benton's Bacon Old Fashioned</a></li>
+            <li><a href="/recipes/bourbon-paloma">Bourbon Paloma</a></li>
+            <li><a href="/recipes/clover-club">Clover Club</a></li>
+            <li><a href="/recipes/enzoni">Enzoni</a></li>
+            <li><a href="/recipes/filibuster">Filibuster</a></li>
+            <li><a href="/recipes/fitzgerald">Fitzgerald</a></li>
+            <li><a href="/recipes/godfather">Godfather</a></li>
+            <li><a href="/recipes/gold-rush">Gold Rush</a></li>
+            <li><a href="/recipes/green-beast">Green Beast</a></li>
+            <li><a href="/recipes/highball">Highball</a></li>
+            <li><a href="/recipes/horsefeather">Horsefeather</a></li>
+            <li><a href="/recipes/hot-buttered-rum">Hot Buttered Rum</a></li>
+            <li><a href="/recipes/jack-rose">Jack Rose</a></li>
+            <li><a href="/recipes/jalapeno-old-fashioned">Jalapeño Old Fashioned</a></li>
+            <li><a href="/recipes/jalapeno-peach-bourbon">Jalapeño Peach Bourbon</a></li>
+            <li><a href="/recipes/kentucky-75">Kentucky 75</a></li>
+            <li><a href="/recipes/kentucky-buck">Kentucky Buck</a></li>
+            <li><a href="/recipes/manhattan">Manhattan</a></li>
+            <li><a href="/recipes/maple-jalapeno-bourbon">Maple Jalapeño Bourbon</a></li>
+            <li><a href="/recipes/mint-julep">Mint Julep</a></li>
+            <li><a href="/recipes/monte-carlo">Monte Carlo</a></li>
+            <li><a href="/recipes/negroni">Negroni</a></li>
+            <li><a href="/recipes/paper-plane">Paper Plane</a></li>
+            <li><a href="/recipes/peanut-butter-old-fashioned">Peanut Butter Old Fashioned</a></li>
+            <li><a href="/recipes/pineapple-jalapeno-whiskey-sour">Pineapple Jalapeño Whiskey Sour</a></li>
+            <li><a href="/recipes/pink-lady">Pink Lady</a></li>
+            <li><a href="/recipes/pontoon-smash">Pontoon Smash</a></li>
+            <li><a href="/recipes/rattlesnake">Rattlesnake</a></li>
+            <li><a href="/recipes/red-raider">Red Raider</a></li>
+            <li><a href="/recipes/revolver">Revolver</a></li>
+            <li><a href="/recipes/sentimental-gentleman">Sentimental Gentleman</a></li>
+            <li><a href="/recipes/southern-baptist">Southern Baptist</a></li>
+            <li><a href="/recipes/strawberry-fix">Strawberry Fix</a></li>
+            <li><a href="/recipes/the-sazerac">The Sazerac</a></li>
+            <li><a href="/recipes/verte-chaud">Verte Chaud</a></li>
+            <li><a href="/recipes/wallys-grenadine-old-fashioned">Wally's Grenadine Old Fashioned</a></li>
+            <li><a href="/recipes/wallys-house-cosmopolitan">Wally's House Cosmopolitan</a></li>
+            <li><a href="/recipes/wallys-old-fashioned">Wally's Old Fashioned — Walnut &amp; Orange</a></li>
+            <li><a href="/recipes/ward-eight">Ward Eight</a></li>
+            <li><a href="/recipes/whiskey-smash">Whiskey Smash</a></li>
+            <li><a href="/recipes/whiskey-sour">Whiskey Sour</a></li>
+            <li><a href="/recipes/whistlepig-smores-old-fashioned">WhistlePig S'mores Old Fashioned</a></li>
+        </ul>
+
+        <p class="intro"><a href="/recipes.html">🍳 Food recipes →</a></p>
+    </main>
+
+    <script>
+    (function () {
+        var box = document.getElementById("recipe-search");
+        var results = document.getElementById("search-results");
+        var empty = document.getElementById("search-empty");
+        var browse = document.getElementById("cocktail-list");
+        var filterButtons = document.querySelectorAll("#recipe-filter .filter-btn");
+        var index = [];         // search-index entries, limited to cocktails
+        var triedSet = {};      // slug -> true, from /api/tried
+        var filterMode = "all"; // "all" | "tried" | "untried"
+
+        // The cocktail set is whatever this page lists.
+        var cocktailSlugs = {};
+        Array.prototype.forEach.call(browse.querySelectorAll('a[href^="/recipes/"]'), function (a) {
+            var m = a.getAttribute("href").match(/^\/recipes\/([a-z0-9-]+)$/);
+            if (m) cocktailSlugs[m[1]] = true;
+        });
+
+        // Prebuilt search index, limited to cocktails.
+        fetch("/recipes/search-index.json")
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                index = data.filter(function (r) { return cocktailSlugs[r.slug]; });
+                update();
+            })
+            .catch(function () { /* search disabled if it can't load */ });
+
+        // Wally's tried list (public read). Mark the list + re-run once it arrives.
+        fetch("/api/tried")
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                (data.tried || []).forEach(function (s) { triedSet[s] = true; });
+                markBrowse();
+                update();
+            })
+            .catch(function () { /* no marks/filter if it can't load */ });
+
+        function matchesFilter(slug) {
+            if (filterMode === "tried") return !!triedSet[slug];
+            if (filterMode === "untried") return !triedSet[slug];
+            return true;
+        }
+
+        function update() {
+            var q = box.value.trim().toLowerCase();
+
+            if (!q && filterMode === "all") {   // default view: the full list
+                results.hidden = true;
+                empty.hidden = true;
+                browse.hidden = false;
+                results.innerHTML = "";
+                return;
+            }
+
+            browse.hidden = true;               // searching/filtering: flat list
+            var matches = index.filter(function (r) {
+                var textOk = !q || r.name.toLowerCase().indexOf(q) !== -1 || r.text.indexOf(q) !== -1;
+                return textOk && matchesFilter(r.slug);
+            });
+
+            results.innerHTML = matches.map(function (r) {
+                var check = triedSet[r.slug] ? ' <span class="tried-check">✓</span>' : "";
+                return '<li><a href="/recipes/' + r.slug + '">' + r.name + check + "</a></li>";
+            }).join("");
+
+            results.hidden = matches.length === 0;
+            empty.hidden = matches.length !== 0;
+        }
+
+        function markBrowse() {
+            Array.prototype.forEach.call(browse.querySelectorAll('a[href^="/recipes/"]'), function (a) {
+                var m = a.getAttribute("href").match(/^\/recipes\/([a-z0-9-]+)$/);
+                if (m && triedSet[m[1]] && !a.querySelector(".tried-check")) {
+                    var mark = document.createElement("span");
+                    mark.className = "tried-check";
+                    mark.textContent = "✓";
+                    a.appendChild(mark);
+                }
+            });
+        }
+
+        box.addEventListener("input", update);
+
+        Array.prototype.forEach.call(filterButtons, function (btn) {
+            btn.addEventListener("click", function () {
+                filterMode = btn.getAttribute("data-filter");
+                Array.prototype.forEach.call(filterButtons, function (b) {
+                    b.classList.toggle("is-active", b === btn);
+                });
+                update();
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

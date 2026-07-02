@@ -1,30 +1,29 @@
-/* Wally's personal "tried it" tracker.
- * Injected by the Worker onto recipe pages.
- *   - Recipe detail page: shows a "Tried it" toggle under the title.
- *   - Recipes index: puts a ✓ next to recipes already tried.
- * Anyone can SEE the marks (read is public); changing one requires the passcode,
- * which is asked once per device and then remembered in the browser.
+/* Wally's personal "tried it" tracker — the toggle on a cocktail's page.
+ * Injected by the Worker onto recipe detail pages. Only COCKTAILS get the
+ * toggle (the cocktail slug list is /cocktail-slugs.json); food recipes don't.
+ * Anyone can SEE the mark (read is public); changing it needs the passcode,
+ * asked once per device and then remembered.
+ * (The Cocktails index page does its own ✓ marking + filtering.)
  */
 (function () {
   var PASS_KEY = "wally-tried-passcode";
   var path = location.pathname.replace(/\/+$/, "");
-  if (path === "") path = "/";
-
   var detail = path.match(/^\/recipes\/([a-z0-9-]+)(?:\.html)?$/);
-  var slug = detail ? detail[1] : null;
-  var isIndex = path === "/recipes" || path === "/recipes.html";
-  if (!slug && !isIndex) return;
+  if (!detail) return;                    // only recipe detail pages
+  var slug = detail[1];
 
-  fetch("/api/tried")
+  // Only show the toggle on cocktails.
+  fetch("/cocktail-slugs.json")
     .then(function (r) { return r.json(); })
-    .then(function (data) {
-      var tried = (data && data.tried) || [];
-      if (slug) renderToggle(tried.indexOf(slug) !== -1);
-      else markIndex(tried);
+    .then(function (slugs) {
+      if (slugs.indexOf(slug) === -1) return;   // not a cocktail — no toggle
+      return fetch("/api/tried")
+        .then(function (r) { return r.json(); })
+        .then(function (data) { renderToggle((data.tried || []).indexOf(slug) !== -1); })
+        .catch(function () { renderToggle(false); });
     })
-    .catch(function () { /* offline or error — just show no marks */ });
+    .catch(function () { /* if the list can't load, show nothing */ });
 
-  /* ---- Recipe detail: the toggle ---- */
   function renderToggle(isTried) {
     var h1 = document.querySelector("h1");
     if (!h1) return;
@@ -84,22 +83,5 @@
     if (!p) return null;
     localStorage.setItem(PASS_KEY, p);
     return p;
-  }
-
-  /* ---- Index: mark the recipes already tried ---- */
-  function markIndex(tried) {
-    if (!tried.length) return;
-    var set = {};
-    tried.forEach(function (s) { set[s] = true; });
-    var links = document.querySelectorAll('.recipe-links a[href^="/recipes/"]');
-    Array.prototype.forEach.call(links, function (a) {
-      var m = a.getAttribute("href").match(/^\/recipes\/([a-z0-9-]+)$/);
-      if (m && set[m[1]] && !a.querySelector(".tried-check")) {
-        var mark = document.createElement("span");
-        mark.className = "tried-check";
-        mark.textContent = "✓";
-        a.appendChild(mark);
-      }
-    });
   }
 })();

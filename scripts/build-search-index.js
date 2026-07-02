@@ -58,3 +58,24 @@ index.sort((a, b) => a.name.localeCompare(b.name));
 
 fs.writeFileSync(OUT_FILE, JSON.stringify(index) + "\n", "utf8");
 console.log(`Wrote ${index.length} recipes to ${path.relative(process.cwd(), OUT_FILE)}`);
+
+// Also emit cocktail-slugs.json — the list of cocktail slugs, taken from the
+// links on cocktails.html. tried.js uses it to show the "Tried it" toggle only
+// on cocktails (food recipes don't get one). Rerun this whenever cocktails.html
+// changes.
+const COCKTAILS_PAGE = path.join(__dirname, "..", "public", "cocktails.html");
+const OUT_COCKTAILS = path.join(__dirname, "..", "public", "cocktail-slugs.json");
+if (fs.existsSync(COCKTAILS_PAGE)) {
+  const chtml = fs.readFileSync(COCKTAILS_PAGE, "utf8");
+  const slugs = [];
+  const re = /href="\/recipes\/([a-z0-9-]+)"/g;
+  let m;
+  while ((m = re.exec(chtml))) {
+    if (slugs.indexOf(m[1]) === -1) slugs.push(m[1]);
+  }
+  slugs.sort();
+  fs.writeFileSync(OUT_COCKTAILS, JSON.stringify(slugs) + "\n", "utf8");
+  console.log(`Wrote ${slugs.length} cocktail slugs to ${path.relative(process.cwd(), OUT_COCKTAILS)}`);
+} else {
+  console.warn("Skipped cocktail-slugs.json (cocktails.html not found)");
+}
