@@ -113,6 +113,22 @@ ul li { margin: 0.15rem 0; }
 }
 .recipe-search::placeholder { color: var(--muted); }
 
+/* Tried / Not-tried filter on the recipes page */
+.recipe-filter { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0 0 1rem; }
+.filter-btn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: #fffdfa;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+}
+.filter-btn:hover { border-color: var(--accent); }
+.filter-btn.is-active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
 /* Recipe index — list of links */
 .recipe-links { list-style: none; padding: 0; margin: 0.6rem 0 0; }
 .recipe-links li { margin: 0.6rem 0; }

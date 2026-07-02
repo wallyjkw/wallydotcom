@@ -18,7 +18,14 @@
                placeholder="Search recipes &amp; ingredients…" autocomplete="off"
                aria-label="Search recipes and ingredients">
 
-        <!-- Results appear here while searching; the grouped categories below hide. -->
+        <!-- Filter by whether Wally has tried the recipe. Works alongside search. -->
+        <div class="recipe-filter" id="recipe-filter" role="group" aria-label="Filter by tried">
+            <button type="button" class="filter-btn is-active" data-filter="all">All</button>
+            <button type="button" class="filter-btn" data-filter="tried">Tried ✓</button>
+            <button type="button" class="filter-btn" data-filter="untried">Not tried</button>
+        </div>
+
+        <!-- Results appear here while searching or filtering; the grouped categories below hide. -->
         <ul class="recipe-links" id="search-results" hidden></ul>
         <p class="empty" id="search-empty" hidden>No recipes match that.</p>
 
@@ -117,18 +124,37 @@
         var results = document.getElementById("search-results");
         var empty = document.getElementById("search-empty");
         var categories = document.getElementById("recipe-categories");
+        var filterButtons = document.querySelectorAll("#recipe-filter .filter-btn");
         var index = [];
+        var triedSet = {};       // slug -> true, from /api/tried
+        var filterMode = "all";  // "all" | "tried" | "untried"
 
-        // Load the prebuilt search index (name + ingredient/step text per recipe).
+        // Prebuilt search index (name + ingredient/step text per recipe).
         fetch("/recipes/search-index.json")
             .then(function (r) { return r.json(); })
-            .then(function (data) { index = data; })
+            .then(function (data) { index = data; update(); })
             .catch(function () { /* leave search disabled if it can't load */ });
 
-        box.addEventListener("input", function () {
+        // Wally's tried list (public read). Re-run once it arrives.
+        fetch("/api/tried")
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                (data.tried || []).forEach(function (s) { triedSet[s] = true; });
+                update();
+            })
+            .catch(function () { /* no marks/filter if it can't load */ });
+
+        function matchesFilter(slug) {
+            if (filterMode === "tried") return !!triedSet[slug];
+            if (filterMode === "untried") return !triedSet[slug];
+            return true;
+        }
+
+        function update() {
             var q = box.value.trim().toLowerCase();
 
-            if (!q) {                       // empty box → show normal categories
+            // Default view: no text and no filter → the grouped categories.
+            if (!q && filterMode === "all") {
                 results.hidden = true;
                 empty.hidden = true;
                 categories.hidden = false;
@@ -136,17 +162,32 @@
                 return;
             }
 
-            categories.hidden = true;       // searching → hide categories, show matches
+            // Otherwise show a flat list filtered by text AND tried-state.
+            categories.hidden = true;
             var matches = index.filter(function (r) {
-                return r.name.toLowerCase().indexOf(q) !== -1 || r.text.indexOf(q) !== -1;
+                var textOk = !q || r.name.toLowerCase().indexOf(q) !== -1 || r.text.indexOf(q) !== -1;
+                return textOk && matchesFilter(r.slug);
             });
 
             results.innerHTML = matches.map(function (r) {
-                return '<li><a href="/recipes/' + r.slug + '">' + r.name + "</a></li>";
+                var check = triedSet[r.slug] ? ' <span class="tried-check">✓</span>' : "";
+                return '<li><a href="/recipes/' + r.slug + '">' + r.name + check + "</a></li>";
             }).join("");
 
             results.hidden = matches.length === 0;
             empty.hidden = matches.length !== 0;
+        }
+
+        box.addEventListener("input", update);
+
+        Array.prototype.forEach.call(filterButtons, function (btn) {
+            btn.addEventListener("click", function () {
+                filterMode = btn.getAttribute("data-filter");
+                Array.prototype.forEach.call(filterButtons, function (b) {
+                    b.classList.toggle("is-active", b === btn);
+                });
+                update();
+            });
         });
     })();
     </script>
