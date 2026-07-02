@@ -141,6 +141,26 @@ ol { margin: 0; padding-left: 1.2rem; }
 ol li { margin: 0.2rem 0; }
 .empty { color: var(--muted); font-style: italic; }
 
+/* Personal "tried it" tracker (recipe pages) */
+.tried-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1.5rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fffdfa;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+}
+.tried-toggle input { width: 1.15rem; height: 1.15rem; accent-color: #2f9e44; margin: 0; }
+.tried-toggle.is-tried { border-color: #2f9e44; color: #2f9e44; }
+.recipe-links .tried-check { color: #2f9e44; font-weight: 700; margin-left: 0.4rem; }
+
 footer {
   margin-top: 2.25rem;
   padding-top: 1.25rem;
